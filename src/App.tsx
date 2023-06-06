@@ -42,9 +42,20 @@ function App() {
 
     // checked unchecked function
     function changeStatus(taskId: string, isDone: boolean, todolistId: string) {
+        // достаем нужный массив по todolistId
+        let tasks = tasksObj[todolistId]
+        // найдем нужную таску
+        let task = tasks.find(t => t.id === taskId)
+        // изменим таску если она нашлась
+        if (task) task.isDone = isDone
+        // засетаем в стейт копию обьекта, что бы react отреагировал перерисовкой
+        setTasksObj({...tasksObj})
+    }
+
+    function changeTaskTitle(taskId: string, newTitle: string, todolistId: string) {
         let tasks = tasksObj[todolistId]
         let task = tasks.find(t => t.id === taskId)
-        if (task) task.isDone = isDone
+        if (task) task.title = newTitle
         setTasksObj({...tasksObj})
     }
 
@@ -70,6 +81,14 @@ function App() {
         setTodolists(filteredTodolist)
         delete tasksObj[todolistId]
         setTasksObj({...tasksObj})
+    }
+
+    function changeTodolistTitle(id: string, newTitle: string) {
+        const todolist = todolists.find(tl => tl.id === id)
+        if (todolist) {
+            todolist.title = newTitle
+            setTodolists([...todolists])
+        }
     }
 
     let [tasksObj, setTasksObj] = useState<TasksStateType>({
@@ -124,8 +143,10 @@ function App() {
                         changeFilter={changeFilter}
                         addTask={addTask}
                         changeTaskStatus={changeStatus}
+                        changeTaskTitle={changeTaskTitle}
                         filter={tl.filter}
-                        removeTodolist={removeTodolist}/>
+                        removeTodolist={removeTodolist}
+                        changeTodolistTitle={changeTodolistTitle}/>
                 })
             }
 
