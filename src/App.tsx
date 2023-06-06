@@ -12,6 +12,10 @@ type TodolistType = {
     filter: FilterValuesType
 }
 
+type TasksStateType = {
+    [key: string]: Array<TaskType>
+}
+
 function App() {
 
     //task delete function
@@ -68,7 +72,7 @@ function App() {
         setTasksObj({...tasksObj})
     }
 
-    let [tasksObj, setTasksObj] = useState({
+    let [tasksObj, setTasksObj] = useState<TasksStateType>({
         [todolistId1]: [
             {id: v1(), title: "CSS&HTML", isDone: true},
             {id: v1(), title: "JS", isDone: true},
@@ -81,9 +85,23 @@ function App() {
         ]
     })
 
+    function addTodoList(title: string) {
+        let todolist: TodolistType = {
+            id: v1(),
+            filter: 'all',
+            title: title
+        }
+
+        setTodolists([todolist, ...todolists])
+        setTasksObj({
+            ...tasksObj,
+            [todolist.id]: []
+        })
+    }
+
     return (
         <div className="App">
-            <AddItemForm addItem={(title: string) => {alert(title)}} />
+            <AddItemForm addItem={addTodoList} />
             {
                 todolists.map((tl) => {
 
